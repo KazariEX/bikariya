@@ -66,7 +66,7 @@
     // 获取两指距离
     function getDistance(mode: "start" | "current") {
         const [finger1, finger2] = fingers.value;
-        return finger1 && finger2 ? Math.hypot(
+        return finger2 ? Math.hypot(
             finger1[`${mode}X`] - finger2[`${mode}X`],
             finger1[`${mode}Y`] - finger2[`${mode}Y`],
         ) : 0;

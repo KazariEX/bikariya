@@ -12,7 +12,7 @@
                 v-if="isOpening.value"
                 class="bikariya-overlay"
                 :style="{ zIndex: zIndex - 1 }"
-                @click="close.value"
+                @click="close.value()"
             ></div>
         </transition>
         <component :is="vnode.value" :is-opening="isOpening.value" :style="{ zIndex }"/>
