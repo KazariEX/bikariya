@@ -8,12 +8,17 @@
   "repository": "KazariEX/bikariya",
   "keywords": [],
   "exports": {
-    ".": "./dist/module.mjs"
+    ".": "./src/module.ts"
   },
   "types": "./dist/module.d.mts",
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "exports": {
+      ".": "./dist/module.mjs"
+    }
+  },
   "scripts": {
     "build": "nuxt-module-build build",
     "dev": "nuxt-module-build build --stub",
