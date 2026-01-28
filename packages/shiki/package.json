@@ -1,8 +1,8 @@
 {
-  "name": "@bikariya/core",
+  "name": "@bikariya/shiki",
   "type": "module",
   "version": "0.0.2",
-  "description": "Bikariya for Nuxt",
+  "description": "Bikariya shiki for Nuxt",
   "author": "KazariEX",
   "license": "MIT",
   "repository": "KazariEX/bikariya",
@@ -20,7 +20,14 @@
     "dev:prepare": "nuxt-module-build prepare",
     "prepack": "pnpm run build"
   },
+  "peerDependencies": {
+    "shiki": "*"
+  },
   "dependencies": {
+    "@bikariya/core": "workspace:",
     "@nuxt/kit": "catalog:"
+  },
+  "devDependencies": {
+    "shiki": "catalog:"
   }
 }

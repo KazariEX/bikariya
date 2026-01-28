@@ -1,8 +1,5 @@
 export default defineNuxtConfig({
     compatibilityDate: "latest",
-    css: [
-        "~/assets/index.scss",
-    ],
     experimental: {
         typescriptPlugin: true,
     },
@@ -12,6 +9,7 @@ export default defineNuxtConfig({
     modules: [
         "@bikariya/image-viewer",
         "@bikariya/modals",
+        "@bikariya/shiki",
         "@nuxt/image",
         "@pinia/nuxt",
         "@unocss/nuxt",
