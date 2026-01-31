@@ -1,6 +1,6 @@
 /// <reference types="pinia" />
 
-import type { BundledLanguage, CodeToHastOptions, HighlighterCore } from "shiki";
+import type { BundledLanguage, CodeToHastOptions, HighlighterCore, RegexEngine } from "shiki";
 import { defineStore, onScopeDispose } from "#imports";
 // @ts-expect-error https://typescript.tv/errors/ts2307
 import untyped from "~/shiki.config";
@@ -37,6 +37,18 @@ export const useShikiStore = defineStore("shiki", () => {
             ...Object.values(config.themes ?? {}).map((load) => load()),
         ]);
 
+        let engine: RegexEngine;
+        try {
+            // eslint-disable-next-line regexp/strict
+            void /(?i: )/;
+            engine = createJavaScriptRegexEngine();
+        }
+        catch {
+            const { createOnigurumaEngine } = await import("shiki/engine-oniguruma.mjs");
+            // @ts-expect-error https://typescript.tv/errors/ts2307
+            engine = await createOnigurumaEngine(import("https://esm.sh/shiki/wasm"));
+        }
+
         Object.assign(options, {
             ...config,
             lang: config.defaultLang,
@@ -50,7 +62,7 @@ export const useShikiStore = defineStore("shiki", () => {
         });
 
         return createHighlighterCore({
-            engine: createJavaScriptRegexEngine(),
+            engine,
             themes,
         });
     }
