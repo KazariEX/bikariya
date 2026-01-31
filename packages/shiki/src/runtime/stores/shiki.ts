@@ -2,7 +2,7 @@
 
 import type { BundledLanguage, CodeToHastOptions, HighlighterCore, RegexEngine } from "shiki";
 import { defineStore, onScopeDispose } from "#imports";
-// @ts-expect-error https://typescript.tv/errors/ts2307
+// @ts-expect-error TS2307
 import untyped from "~/shiki.config";
 import type { Config } from "../config";
 
@@ -44,9 +44,13 @@ export const useShikiStore = defineStore("shiki", () => {
             engine = createJavaScriptRegexEngine();
         }
         catch {
-            const { createOnigurumaEngine } = await import("shiki/engine-oniguruma.mjs");
-            // @ts-expect-error https://typescript.tv/errors/ts2307
-            engine = await createOnigurumaEngine(import("https://esm.sh/shiki/wasm"));
+            const [{ createOnigurumaEngine }, wasm] = await Promise.all([
+                // @ts-expect-error TS2307
+                import("https://esm.sh/shiki/engine-oniguruma.mjs") as typeof import("shiki/engine-oniguruma.mjs"),
+                // @ts-expect-error TS2307
+                import("https://esm.sh/shiki/wasm") as typeof import("shiki/wasm"),
+            ]);
+            engine = await createOnigurumaEngine(wasm);
         }
 
         Object.assign(options, {
@@ -68,7 +72,7 @@ export const useShikiStore = defineStore("shiki", () => {
     }
 
     async function loadLang(...langs: string[]) {
-        // @ts-expect-error https://typescript.tv/errors/ts2307
+        // @ts-expect-error TS2307
         const { bundledLanguages } = await import("https://esm.sh/shiki/langs") as typeof import("shiki/langs");
         const loadedLanguages = shiki?.getLoadedLanguages() ?? [];
         await Promise.all(
