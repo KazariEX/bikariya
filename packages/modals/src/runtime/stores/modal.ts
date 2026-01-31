@@ -11,6 +11,8 @@ interface ModalContext {
     close: ComputedRef<() => void>;
 }
 
+type ModalStatus = "closed" | "open" | "closing";
+
 interface UseModalOptions {
     duration?: number;
     immediate?: boolean;
@@ -33,7 +35,7 @@ export const useModalStore = defineStore("modal", () => {
          * 弹窗是否处于显示状态
          * 此变量用于在弹窗上下文被插入列表时单独地触发各自的 transition 动画，而不是由 transition-group 统一处理
          */
-        const isOpening = ref(false);
+        const status = ref<ModalStatus>("closed");
 
         //立即打开
         immediate && open();
@@ -48,7 +50,7 @@ export const useModalStore = defineStore("modal", () => {
                 vnode.value.props = {
                     onClose: close,
                     onVnodeMounted() {
-                        isOpening.value = true;
+                        status.value = "open";
                     },
                     ...vnode.value.props,
                 };
@@ -61,7 +63,7 @@ export const useModalStore = defineStore("modal", () => {
                 vnode,
                 zIndex,
                 duration,
-                open: isOpening,
+                open: computed(() => status.value === "open"),
                 close: computed(() => vnode.value.props?.onClose),
             };
 
@@ -69,8 +71,9 @@ export const useModalStore = defineStore("modal", () => {
         }
 
         async function close() {
-            isOpening.value = false;
+            status.value = "closing";
             await promiseTimeout(duration);
+            status.value = "closed";
 
             const i = indexOf();
             if (i !== -1) {
@@ -85,6 +88,7 @@ export const useModalStore = defineStore("modal", () => {
         return {
             open,
             close,
+            status,
         };
     }
 
