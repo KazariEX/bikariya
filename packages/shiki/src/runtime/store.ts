@@ -39,8 +39,8 @@ export const useShikiStore = defineStore("shiki", () => {
 
         let engine: RegexEngine;
         try {
-            // eslint-disable-next-line regexp/strict
-            void /(?i: )/;
+            // eslint-disable-next-line prefer-regex-literals, regexp/strict
+            void new RegExp("(?i: )");
             engine = createJavaScriptRegexEngine();
         }
         catch {
