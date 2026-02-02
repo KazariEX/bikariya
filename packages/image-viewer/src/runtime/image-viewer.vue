@@ -130,7 +130,7 @@
             const finalWidth = startRect.width * rate;
             const finalHeight = startRect.height * rate;
 
-            if (isOverLimit(finalWidth, finalHeight, rate)) {
+            if (isSizeOutOfBounds(finalWidth, finalHeight, rate)) {
                 return;
             }
 
@@ -171,7 +171,7 @@
         const finalWidth = width * rate;
         const finalHeight = height * rate;
 
-        if (isOverLimit(finalWidth, finalHeight, rate)) {
+        if (isSizeOutOfBounds(finalWidth, finalHeight, rate)) {
             return;
         }
 
@@ -186,76 +186,83 @@
     // 鼠标双击时
     function onDoubleClick(event: MouseEvent) {
         const { left, top, width, height } = rootEl.value!.getBoundingClientRect();
-        const { size: [coverWidth, coverHeight], advantageSide } = getFitSize("cover");
+        const { containSize, coverSize, advantageSide } = getFitSize();
 
-        if (width < coverWidth && height < coverHeight) {
-            const [finalLeft, finalTop] = advantageSide === "height" ? [
-                `calc(50% - ${Math.round(coverWidth / 2)}px)`,
-                `${top - (event.clientY - top) * (coverHeight / height - 1)}px`,
-            ] : [
-                `${left - (event.clientX - left) * (coverWidth / width - 1)}px`,
-                `calc(50% - ${Math.round(coverHeight / 2)}px)`,
-            ];
+        if (width < coverSize.width && height < coverSize.height) {
+            const centerLoc = {
+                left: `calc(50% - ${Math.round(coverSize.width / 2)}px)`,
+                top: `calc(50% - ${Math.round(coverSize.height / 2)}px)`,
+            };
+            const pointerLoc = {
+                left: `${left - (event.clientX - left) * (coverSize.width / width - 1)}px`,
+                top: `${top - (event.clientY - top) * (coverSize.height / height - 1)}px`,
+            };
 
             rootEl.value!.animate({
-                left: finalLeft,
-                top: finalTop,
-                width: Math.ceil(coverWidth) + "px",
-                height: Math.ceil(coverHeight) + "px",
+                left: advantageSide === "height" ? centerLoc.left : pointerLoc.left,
+                top: advantageSide === "height" ? pointerLoc.top : centerLoc.top,
+                width: Math.ceil(coverSize.width) + "px",
+                height: Math.ceil(coverSize.height) + "px",
             }, options.value);
         }
         else {
-            const { size: [containWidth, containHeight] } = getFitSize("contain");
-
             rootEl.value!.animate({
-                left: `calc(50% - ${Math.round(containWidth / 2)}px)`,
-                top: `calc(50% - ${Math.round(containHeight / 2)}px)`,
-                width: Math.floor(containWidth) + "px",
-                height: Math.floor(containHeight) + "px",
+                left: `calc(50% - ${Math.round(containSize.width / 2)}px)`,
+                top: `calc(50% - ${Math.round(containSize.height / 2)}px)`,
+                width: Math.floor(containSize.width) + "px",
+                height: Math.floor(containSize.height) + "px",
             }, options.value);
         }
     }
 
     // 打开时
     const onEnter: BaseTransitionProps<HTMLImageElement>["onEnter"] = (el) => {
-        const { size: [containWidth, containHeight] } = getFitSize("contain");
+        const { containSize } = getFitSize();
 
         // 移动至屏幕中心
         el.animate([getOriginalKeyframe(), {
-            top: `calc(50% - ${Math.round(containHeight / 2)}px)`,
-            left: `calc(50% - ${Math.round(containWidth / 2)}px)`,
-            width: Math.floor(containWidth) + "px",
-            height: Math.floor(containHeight) + "px",
+            top: `calc(50% - ${Math.round(containSize.height / 2)}px)`,
+            left: `calc(50% - ${Math.round(containSize.width / 2)}px)`,
+            width: Math.floor(containSize.width) + "px",
+            height: Math.floor(containSize.height) + "px",
             clipPath: "inset(0)",
         }], options.value);
     };
 
     // 关闭时
     const onLeave: BaseTransitionProps<HTMLImageElement>["onLeave"] = (el, done) => {
-        const { left: elLeft, top: elTop } = el.getBoundingClientRect();
-        const { scrollX: x, scrollY: y } = window;
+        const { left, top } = el.getBoundingClientRect();
+        const { scrollX, scrollY } = window;
 
         // 回到原位
         const animation = el.animate([{
-            top: 2 * y + elTop + "px",
-            left: 2 * x + elLeft + "px",
+            top: 2 * scrollY + top + "px",
+            left: 2 * scrollX + left + "px",
             clipPath: "inset(0)",
-        }, getOriginalKeyframe(x, y)], options.value);
+        }, getOriginalKeyframe(scrollX, scrollY)], options.value);
 
         animation.addEventListener("finish", done);
     };
 
     // 获取适应尺寸
-    function getFitSize(mode: "contain" | "cover") {
+    function getFitSize() {
         const fixedWidth = window.innerWidth * rate;
         const fixedHeight = window.innerHeight * rate;
         const naturalRatio = target.naturalWidth / target.naturalHeight;
         const advantageSide = fixedWidth / fixedHeight > naturalRatio ? "height" : "width";
 
+        const widthSize = {
+            width: fixedWidth,
+            height: fixedWidth / naturalRatio,
+        };
+        const heightSize = {
+            width: fixedHeight * naturalRatio,
+            height: fixedHeight,
+        };
+
         return {
-            size: +(advantageSide === "height") ^ +(mode === "cover")
-                ? [fixedHeight * naturalRatio, fixedHeight]
-                : [fixedWidth, fixedWidth / naturalRatio],
+            containSize: advantageSide === "height" ? heightSize : widthSize,
+            coverSize: advantageSide === "height" ? widthSize : heightSize,
             advantageSide,
         };
     }
@@ -276,14 +283,14 @@
         let clipRight = 0;
 
         if (ratio > naturalRatio) {
-            const fullHeight = naturalHeight * width / naturalWidth;
-            clipTop = (fullHeight - height) * vertical;
-            clipBottom = fullHeight - height - clipTop;
+            const rest = width / naturalRatio - height;
+            clipTop = rest * vertical;
+            clipBottom = rest - clipTop;
         }
         else {
-            const fullWidth = naturalWidth * height / naturalHeight;
-            clipLeft = (fullWidth - width) * horizontal;
-            clipRight = fullWidth - width - clipLeft;
+            const rest = height * naturalRatio - width;
+            clipLeft = rest * horizontal;
+            clipRight = rest - clipLeft;
         }
 
         return {
@@ -296,7 +303,7 @@
     }
 
     // 尺寸是否超出限制
-    function isOverLimit(width: number, height: number, rate: number) {
+    function isSizeOutOfBounds(width: number, height: number, rate: number) {
         if (!clamp) {
             return false;
         }
