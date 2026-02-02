@@ -10,6 +10,9 @@
       "path": "./packages/modals/tsconfig.json"
     },
     {
+      "path": "./packages/shiki/tsconfig.json"
+    },
+    {
       "path": "./playground/tsconfig.json"
     }
   ],
