@@ -236,8 +236,8 @@
 
         // 回到原位
         const animation = el.animate([{
-            top: 2 * scrollY + top + "px",
-            left: 2 * scrollX + left + "px",
+            top: `calc(${2 * scrollY + top}px + 50dvh - 50svh)`,
+            left: `calc(${2 * scrollX + left}px + 50dvw - 50svw)`,
             clipPath: "inset(0)",
         }, getOriginalKeyframe(scrollX, scrollY)], options.value);
 
