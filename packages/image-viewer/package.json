@@ -1,7 +1,7 @@
 {
   "name": "@bikariya/image-viewer",
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Bikariya image viewer for Nuxt",
   "author": "KazariEX",
   "license": "MIT",

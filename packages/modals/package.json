@@ -1,7 +1,7 @@
 {
   "name": "@bikariya/modals",
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Bikariya modals for Nuxt",
   "author": "KazariEX",
   "license": "MIT",
