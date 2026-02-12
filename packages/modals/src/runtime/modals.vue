@@ -6,7 +6,7 @@
 </script>
 
 <template>
-    <template v-for="{ vnode, zIndex, open, close } in modals" :key="zIndex">
+    <template v-for="{ vnode, zIndex, duration, open, close } in modals" :key="zIndex">
         <transition>
             <div
                 v-if="open.value"
@@ -15,6 +15,6 @@
                 @click="close.value()"
             ></div>
         </transition>
-        <component :is="vnode.value" :open="open.value" :style="{ zIndex }"/>
+        <component :is="vnode.value" :duration :open="open.value" :style="{ zIndex }"/>
     </template>
 </template>

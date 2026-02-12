@@ -13,7 +13,7 @@ interface ModalContext {
 
 type ModalStatus = "closed" | "open" | "closing";
 
-interface UseModalOptions {
+export interface UseModalOptions {
     duration?: number;
     immediate?: boolean;
     unique?: boolean;

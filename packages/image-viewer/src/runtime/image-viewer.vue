@@ -1,17 +1,13 @@
 <script lang="ts" setup>
     import type { BaseTransitionProps } from "vue";
     import { computed, ref, useEventListener, usePointer, useTemplateRef } from "#imports";
+    import type { ModalEmits, ModalProps } from "#modals";
 
-    const { target, duration = 400, rate = 0.9, clamp } = defineProps<{
+    const { target, duration, rate = 0.9, clamp } = defineProps<ModalProps & {
         /**
          * 目标 `<img>` 元素
          */
         target: HTMLImageElement;
-        /**
-         * 过渡动画时长 (ms)
-         * @default 400
-         */
-        duration?: number;
         /**
          * 放大后占窗口比率
          * @default 0.9
@@ -22,11 +18,8 @@
          * @default false
          */
         clamp?: boolean;
-        open?: boolean;
     }>();
-    const emit = defineEmits<{
-        close: [];
-    }>();
+    const emit = defineEmits<ModalEmits>();
 
     const rootEl = useTemplateRef("root");
 

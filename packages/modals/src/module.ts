@@ -9,8 +9,10 @@ export default defineNuxtModule({
     moduleDependencies: {
         "@bikariya/core": {},
     },
-    setup() {
+    setup(options, nuxt) {
         const resolver = createResolver(import.meta.url);
+
+        nuxt.options.alias["#modals"] = resolver.resolve("runtime/types");
 
         addImportsSources({
             from: resolver.resolve("runtime/store"),

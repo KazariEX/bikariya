@@ -1,6 +1,6 @@
 # @bikariya/modals
 
-无头模态框管理，基于 [Pinia](https://pinia.vuejs.org)。
+模态框状态管理，基于 [Pinia](https://pinia.vuejs.org)。
 
 ## 安装
 
@@ -32,13 +32,10 @@ pnpm i -D @bikariya/modals
 
    ```vue
    <script lang="ts" setup>
-     defineProps<{
-       open?: boolean;
-     }>();
+     import type { ModalEmits, ModalProps } from "#modals";
 
-     defineEmits<{
-       close: [];
-     }>();
+     defineProps<ModalProps>();
+     defineEmits<ModalEmits>();
    </script>
 
    <template>
