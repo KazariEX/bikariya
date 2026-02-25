@@ -3,9 +3,9 @@
   "private": true,
   "packageManager": "pnpm@10.30.2",
   "scripts": {
-    "build": "pnpm --filter @bikariya/* build",
+    "build": "pnpm --filter \"@bikariya/*\" build",
     "dev": "pnpm -C playground dev",
-    "dev:prepare": "pnpm --filter @bikariya/* dev:prepare",
+    "dev:prepare": "pnpm --filter \"@bikariya/*\" dev:prepare",
     "release": "bumpp -r --no-push -c \"release: v%s\""
   },
   "devDependencies": {
