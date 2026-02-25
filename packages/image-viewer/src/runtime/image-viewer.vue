@@ -297,16 +297,16 @@
 
     // 尺寸是否超出限制
     function isSizeOutOfBounds(width: number, height: number, rate: number) {
-        if (!clamp) {
+        if (!clamp || !rootEl.value) {
             return false;
         }
         if (rate > 1) {
-            return width > Math.max(window.innerWidth, target.width, target.naturalWidth)
-                && height > Math.max(window.innerHeight, target.height, target.naturalHeight);
+            return width > Math.max(window.innerWidth, target.width, rootEl.value.naturalWidth)
+                && height > Math.max(window.innerHeight, target.height, rootEl.value.naturalHeight);
         }
         else {
-            return width < Math.min(window.innerWidth, target.width, target.naturalWidth)
-                && height < Math.min(window.innerHeight, target.height, target.naturalHeight);
+            return width < Math.min(window.innerWidth, target.width, rootEl.value.naturalWidth)
+                && height < Math.min(window.innerHeight, target.height, rootEl.value.naturalHeight);
         }
     }
 </script>
