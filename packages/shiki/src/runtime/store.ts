@@ -4,6 +4,7 @@ import type { BundledLanguage, CodeToHastOptions, HighlighterCore, RegexEngine }
 import { defineStore, onScopeDispose } from "#imports";
 // @ts-expect-error TS2307
 import untyped from "~/shiki.config";
+import { withMarkdownEmbed } from "./markdown-embed";
 import type { Config } from "./config";
 
 export const useShikiStore = defineStore("shiki", () => {
@@ -78,7 +79,10 @@ export const useShikiStore = defineStore("shiki", () => {
     await Promise.all(
       langs
         .filter((lang) => !loadedLanguages.includes(lang))
-        .map((lang) => bundledLanguages[lang as BundledLanguage]?.().then(shiki?.loadLanguage)),
+        .map((lang) => bundledLanguages[lang as BundledLanguage]?.().then((mod) => {
+          const grammars = Array.isArray(mod.default) ? mod.default : [mod.default];
+          return shiki?.loadLanguage(withMarkdownEmbed(grammars));
+        })),
     );
   }
 
